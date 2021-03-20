@@ -8,7 +8,7 @@ server_times = {
                 'EU':pytz.timezone('CET'),
                 'ASIA':pytz.timezone('Asia/Shanghai'),
               }
-fmt = '%-I:%-M %p'
+fmt = '%-I:%M %p'
 def formatTimedelta(timedelta):
     s = timedelta.seconds
     hours, remainder = divmod(s, 3600)
