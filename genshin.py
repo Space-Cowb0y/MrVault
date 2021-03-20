@@ -21,12 +21,10 @@ def createEmbed():
     embed = discord.Embed(title='Server Time')
     for server in server_times:
         time_now = datetime.datetime.now(tz=server_times[server])
-        if(4 >= int(time_now.strftime('%H'))):
-            reset_datetime = time_now + datetime.timedelta(days=1)
         reset_datetime = time_now.replace(hour=4,minute=0,second=0,microsecond=0)
         deltatime_until_reset = reset_datetime - time_now
         embed.add_field(
-                        name="{1} {2}".format(server,time_now.strftime(fmt)),
+                        name="{0} {1}".format(server,time_now.strftime(fmt)),
                         value=formatTimedelta(deltatime_until_reset)
                        )
         embed.timestamp = datetime.datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
