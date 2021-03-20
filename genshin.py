@@ -14,25 +14,28 @@ def formatTimedelta(timedelta):
     hours, remainder = divmod(s, 3600)
     minutes, seconds = divmod(remainder, 60)
     if(hours > 0):
-        return '{} hours and {} minutes until daily reset'.format(hours,minutes)
+        return '{} horas e {} minutos at\u00e9 o reset di\u00e1rio'.format(hours,minutes)
     else:
-        return '{} minutes until daily reset'.format(minutes)
+        return '{} minutos at\u00e9 o reset di\u00e1rio'.format(minutes)
+
 def createEmbed():
     embed = discord.Embed(title='Server Time')
+    embed.description = ""
     for server in server_times:
         time_now = datetime.datetime.now(tz=server_times[server])
         reset_datetime = time_now.replace(hour=4,minute=0,second=0,microsecond=0)
         deltatime_until_reset = reset_datetime - time_now
-        embed.add_field(
-                        name="{0} {1}".format(server,time_now.strftime(fmt)),
-                        value=formatTimedelta(deltatime_until_reset)
-                       )
+        server_time_line = "```fix\n# {0} {1}```".format(server,
+                                                    time_now.strftime(fmt),
+                                                   )
+        time_left_line = "\u2022 {0}".format(formatTimedelta(deltatime_until_reset))
+        embed.description = embed.description + server_time_line +  time_left_line
+        embed.set_image(url='https://i.ytimg.com/vi/TSsWsCdiiPI/maxresdefault.jpg')
         embed.timestamp = datetime.datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
     return embed
 @commands.command()
 async def genshin_time(ctx):
     await ctx.send(embed=createEmbed())
-
 class EditCog(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
