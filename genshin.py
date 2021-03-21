@@ -37,7 +37,7 @@ def createEmbed():
         embed.description = embed.description + server_time_line + time_left_line
 
 
-    daily_checkin_line = "```fix\n# {0} {1}```".format("Daily Checkin", time_now.strftime(fmt))
+    daily_checkin_line = "```fix\n# {0} {1}```".format("HoYoLab Daily Check-In", time_now.strftime(fmt))
     checkin_reset_time = time_now.replace(hour=0,minute=0,second=0,microsecond=0)
     checkin_time_left = checkin_reset_time - time_now
     checkin_timeleft_line = "\u2022 {0}".format(formatTimedelta(checkin_time_left))
@@ -45,7 +45,7 @@ def createEmbed():
 
     embed.set_image(url='https://i.ytimg.com/vi/TSsWsCdiiPI/maxresdefault.jpg')
     embed.timestamp = datetime.datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
-
+    embed.set_footer(text='%gt,%genshin,%time')
     return embed
 
 @commands.command(aliases=['gt','genshin','time'])
