@@ -48,7 +48,7 @@ def createEmbed():
 
     return embed
 
-@commands.command()
+@commands.command(aliases=['gt','genshin','time'])
 async def genshin_time(ctx):
     await ctx.send(embed=createEmbed())
 
