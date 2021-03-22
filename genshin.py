@@ -4,7 +4,7 @@ import pytz
 import datetime
 
 # TODO(#1): Cog it up.
-# TODO: Implement wishes.
+# TODO(#2): Implement wishes.
 # TODO: Implement character and weapon stats.
 # TODO: Add weekly reset timer.
 
