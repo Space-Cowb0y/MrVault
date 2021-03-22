@@ -3,6 +3,11 @@ from discord.ext import commands, tasks
 import pytz
 import datetime
 
+# TODO(#1): Cog it up.
+# TODO: Implement wishes.
+# TODO: Implement character and weapon stats.
+# TODO: Add weekly reset timer.
+
 server_times = {
                 'NA':pytz.timezone('US/Central'),
                 'EU':pytz.timezone('CET'),
@@ -43,7 +48,7 @@ def createEmbed():
     checkin_timeleft_line = "\u2022 {0}".format(formatTimedelta(checkin_time_left))
     embed.description = embed.description + daily_checkin_line + checkin_timeleft_line
 
-    embed.set_image(url='https://i.ytimg.com/vi/TSsWsCdiiPI/maxresdefault.jpg')
+    embed.set_image(url='https://i.imgur.com/40UEepe.png')
     embed.timestamp = datetime.datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
     embed.set_footer(text='%gt,%genshin,%time')
     return embed
