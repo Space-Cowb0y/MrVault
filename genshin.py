@@ -6,7 +6,7 @@ import datetime
 # TODO(#1): Cog it up.
 # TODO(#2): Implement wishes.
 # TODO(#3): Implement character and weapon stats.
-# TODO: Add weekly reset timer.
+# TODO(#4): Add weekly reset timer.
 
 server_times = {
                 'NA':pytz.timezone('US/Central'),
