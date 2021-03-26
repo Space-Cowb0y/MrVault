@@ -1,16 +1,16 @@
 import discord
 from discord.ext import commands
+import random
 
 class TextCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.guild = None
         self.emojis = ()
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.guild = self.bot.get_guild(334885839857516544)
-        self.emojis = self.guild.emojis
+        guild = self.bot.get_guild(334885839857516544)
+        self.emojis = guild.emojis
 
     @commands.command()
     async def omega(self, ctx, *args):
@@ -23,3 +23,17 @@ class TextCog(commands.Cog):
             await ctx.send(omegafied)
         else:
             await ctx.send(' '.join(args))
+
+    @commands.command()
+    async def decida(self,ctx,*args):
+        if(len(args) < 2):
+            await ctx.send('Cara, tu n\u00e3o me deu escolhas o suficiente')
+        else:
+            random.seed()
+            listArgs = list(args)
+            listArgs.append("")
+            choice = random.choice(listArgs)
+            if(choice == ""):
+                await ctx.send('Prefiro n\u00e3o escolher!')
+            else:
+                await ctx.send('Decidi ' + choice)
