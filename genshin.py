@@ -20,13 +20,15 @@ def formatTimedelta(timedelta):
     hours, remainder = divmod(s, 3600)
     minutes, seconds = divmod(remainder, 60)
     if(hours > 0 and minutes > 0):
-        return '{} horas e {} minutos at\u00e9 o reset di\u00e1rio'.format(hours,minutes)
+        return '{} horas e {} minutos at\u00e9 o reset'.format(hours,minutes)
     elif(hours > 0 and minutes == 0):
-        return '{} horas at\u00e9 o reset di\u00e1rio'
+        return '{} horas at\u00e9 o reset'
     else:
-        return '{} minutos at\u00e9 o reset di\u00e1rio'.format(minutes)
+        return '{} minutos at\u00e9 o reset'.format(minutes)
 
 def createEmbed():
+
+    today = datetime.datetime.today().weekday()
     time_now = datetime.datetime.now()
     embed = discord.Embed(title='Timers')
     embed.description = ""
@@ -38,15 +40,24 @@ def createEmbed():
         server_time_line = "```fix\n# {0} {1}```".format(server,
                                                     time_now.strftime(fmt),
                                                    )
-        time_left_line = "\u2022 {0}".format(formatTimedelta(deltatime_until_reset))
+        time_left_line = "\u2022 {0} di\u00e1rio".format(formatTimedelta(deltatime_until_reset))
         embed.description = embed.description + server_time_line + time_left_line
 
 
     daily_checkin_line = "```fix\n# {0} {1}```".format("HoYoLab Daily Check-In", time_now.strftime(fmt))
     checkin_reset_time = time_now.replace(hour=0,minute=0,second=0,microsecond=0)
     checkin_time_left = checkin_reset_time - time_now
-    checkin_timeleft_line = "\u2022 {0}".format(formatTimedelta(checkin_time_left))
-    embed.description = embed.description + daily_checkin_line + checkin_timeleft_line
+    checkin_timeleft_line = "\u2022 {0} di\u00e1rio".format(formatTimedelta(checkin_time_left))
+
+    time_now = datetime.datetime.now(tz=server_times["NA"])
+    artifact_line = "```fix\n# {0} {1}```".format("NPCs Vendedores de Artefatos", time_now.strftime(fmt))
+
+    artifact_reset_time = time_now.replace(hour=4,minute=0, second=0, microsecond=0)
+    delta_time = artifact_reset_time - time_now
+    delta_days = abs(today - 3)
+    artifact_reset_line = "\u2022 {0} dias, {1} semanal".format(delta_days, formatTimedelta(delta_time))
+
+    embed.description = embed.description + daily_checkin_line + checkin_timeleft_line + artifact_line + artifact_reset_line
 
     embed.set_image(url='https://i.imgur.com/40UEepe.png')
     embed.timestamp = datetime.datetime.now(tz=pytz.timezone('America/Sao_Paulo'))

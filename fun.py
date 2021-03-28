@@ -30,10 +30,22 @@ class TextCog(commands.Cog):
             await ctx.send('Cara, tu n\u00e3o me deu escolhas o suficiente')
         else:
             random.seed()
+
             listArgs = list(args)
             listArgs.append("")
-            choice = random.choice(listArgs)
-            if(choice == ""):
+
+            listArgsLen = len(listArgs)
+            no_pick_weight = 1/listArgsLen/2
+            weight = 1 - no_pick_weight
+            prob = []
+
+            for i in range(0,listArgsLen - 1):
+                prob.append(weight)
+
+            prob.append(no_pick_weight)
+
+            choice = random.choices(listArgs, weights=prob, k = 1)
+            if(choice[0] == ""):
                 await ctx.send('Prefiro n\u00e3o escolher!')
             else:
-                await ctx.send('Decidi ' + choice)
+                await ctx.send('Decidi ' + choice[0])
