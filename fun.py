@@ -19,7 +19,7 @@ class TextCog(commands.Cog):
             if(e.name == 'OMEGALUL'):
                 omegalul = e
         if(omegalul):
-            omegafied = ' '.join(args).replace('o',str(omegalul)).replace('O', str(omegalul))
+            omegafied = ' '.join(args).replace('O',str(omegalul)).replace('o',str(omegalul))
             await ctx.send(omegafied)
         else:
             await ctx.send(' '.join(args))
