@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import pytz
 import datetime
+from enum import IntEnum
 
 # TODO(#1): Cog it up.
 # TODO(#2): Implement wishes.
@@ -13,6 +14,16 @@ server_times = {
                 'EU':pytz.timezone('CET'),
                 'ASIA':pytz.timezone('Asia/Shanghai'),
                }
+class Days(IntEnum):
+    MONDAY = 0
+    TUESDAY = 1
+    WEDNESDAY = 2
+    THURSDAY = 3
+    FRIDAY = 4
+    SATURDAY = 5
+    SUNDAY = 6
+
+
 fmt = '%-I:%M %p'
 
 def formatTimedelta(timedelta):
@@ -20,11 +31,23 @@ def formatTimedelta(timedelta):
     hours, remainder = divmod(s, 3600)
     minutes, seconds = divmod(remainder, 60)
     if(hours > 0 and minutes > 0):
-        return '{} horas e {} minutos at\u00e9 o reset'.format(hours,minutes)
+        return '{} horas e {} minutos'.format(hours,minutes)
     elif(hours > 0 and minutes == 0):
-        return '{} horas at\u00e9 o reset'
+        return '{} horas'
     else:
-        return '{} minutos at\u00e9 o reset'.format(minutes)
+        return '{} minutos'.format(minutes)
+
+def labelFormatText(label, time):
+    return "```fix\n# {0} {1}```".format(label,time)
+
+def timeFormatText(formatted_time_delta,is_weekly=False,days=0):
+    if(is_weekly):
+        if(days==0):
+            return "\u2022 {0} at\u00e9 o reset semanal".format(formatted_time_delta)
+        else:
+            return "\u2022 {0} dias e {1} at\u00e9 o reset semanal".format(days, formatted_time_delta)
+    else:
+        return "\u2022 {0} at\u00e9 o reset diário".format(formatted_time_delta)
 
 def createEmbed():
 
@@ -37,27 +60,21 @@ def createEmbed():
         time_now = datetime.datetime.now(tz=server_times[server])
         reset_datetime = time_now.replace(hour=4,minute=0,second=0,microsecond=0)
         deltatime_until_reset = reset_datetime - time_now
-        server_time_line = "```fix\n# {0} {1}```".format(server,
-                                                    time_now.strftime(fmt),
-                                                   )
-        time_left_line = "\u2022 {0} di\u00e1rio".format(formatTimedelta(deltatime_until_reset))
-        embed.description = embed.description + server_time_line + time_left_line
+        embed.description += labelFormatText(server, time_now.strftime(fmt))
+        embed.description += timeFormatText(formatTimedelta(deltatime_until_reset))
 
-
-    daily_checkin_line = "```fix\n# {0} {1}```".format("HoYoLab Daily Check-In", time_now.strftime(fmt))
+    embed.description += labelFormatText("HoYoLab Daily Check-In", time_now.strftime(fmt))
     checkin_reset_time = time_now.replace(hour=0,minute=0,second=0,microsecond=0)
     checkin_time_left = checkin_reset_time - time_now
-    checkin_timeleft_line = "\u2022 {0} di\u00e1rio".format(formatTimedelta(checkin_time_left))
+    embed.description += timeFormatText(formatTimedelta(checkin_time_left))
 
     time_now = datetime.datetime.now(tz=server_times["NA"])
-    artifact_line = "```fix\n# {0} {1}```".format("NPCs Vendedores de Artefatos", time_now.strftime(fmt))
+    embed.description += labelFormatText("NPCs Vendedores de Artefatos", time_now.strftime(fmt))
 
     artifact_reset_time = time_now.replace(hour=4,minute=0, second=0, microsecond=0)
     delta_time = artifact_reset_time - time_now
-    delta_days = abs(today - 3)
-    artifact_reset_line = "\u2022 {0} dias, {1} semanal".format(delta_days, formatTimedelta(delta_time))
-
-    embed.description = embed.description + daily_checkin_line + checkin_timeleft_line + artifact_line + artifact_reset_line
+    delta_days = abs(today - Days.THURSDAY)
+    embed.description += timeFormatText(formatTimedelta(delta_time),is_weekly=True,days=delta_days)
 
     embed.set_image(url='https://i.imgur.com/40UEepe.png')
     embed.timestamp = datetime.datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
