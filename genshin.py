@@ -7,7 +7,6 @@ from enum import IntEnum
 # TODO(#1): Cog it up.
 # TODO(#2): Implement wishes.
 # TODO(#3): Implement character and weapon stats.
-# TODO(#4): Add weekly reset timer.
 
 server_times = {
                 'NA':pytz.timezone('US/Central'),
@@ -51,8 +50,6 @@ def timeFormatText(formatted_time_delta,is_weekly=False,days=0):
 
 def createEmbed():
 
-    today = datetime.datetime.today().weekday()
-    time_now = datetime.datetime.now()
     embed = discord.Embed(title='Timers')
     embed.description = ""
 
@@ -60,8 +57,14 @@ def createEmbed():
         time_now = datetime.datetime.now(tz=server_times[server])
         reset_datetime = time_now.replace(hour=4,minute=0,second=0,microsecond=0)
         deltatime_until_reset = reset_datetime - time_now
+        delta_days = (Days.MONDAY - time_now.weekday()) % 7
+        if(delta_days == 0 and time_now.hour >= reset_datetime.hour):
+            delta_days = 6
         embed.description += labelFormatText(server, time_now.strftime(fmt))
-        embed.description += timeFormatText(formatTimedelta(deltatime_until_reset))
+        embed.description += timeFormatText(formatTimedelta(deltatime_until_reset)) + "\n"
+        embed.description += timeFormatText(formatTimedelta(deltatime_until_reset),
+                                           is_weekly=True,
+                                           days=delta_days)
 
     embed.description += labelFormatText("HoYoLab Daily Check-In", time_now.strftime(fmt))
     checkin_reset_time = time_now.replace(hour=0,minute=0,second=0,microsecond=0)
@@ -73,7 +76,9 @@ def createEmbed():
 
     artifact_reset_time = time_now.replace(hour=4,minute=0, second=0, microsecond=0)
     delta_time = artifact_reset_time - time_now
-    delta_days = abs(today - Days.THURSDAY)
+    delta_days = (Days.THURSDAY - time_now.weekday()) % 7
+    if(delta_days == 0 and time_now.hour >= artifact_reset_time):
+        delta_days =  6
     embed.description += timeFormatText(formatTimedelta(delta_time),is_weekly=True,days=delta_days)
 
     embed.set_image(url='https://i.imgur.com/40UEepe.png')
