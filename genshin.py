@@ -29,12 +29,23 @@ def formatTimedelta(timedelta):
     s = timedelta.seconds
     hours, remainder = divmod(s, 3600)
     minutes, seconds = divmod(remainder, 60)
-    if(hours > 0 and minutes > 0):
-        return '{} horas e {} minutos'.format(hours,minutes)
-    elif(hours > 0 and minutes == 0):
-        return '{} horas'
+
+    if(hours == 1):
+        hoursfmt = "hora"
     else:
-        return '{} minutos'.format(minutes)
+        hoursfmt = "horas"
+
+    if(minutes == 1):
+        minutesfmt = "minuto"
+    else:
+        minutesfmt = "minutos"
+
+    if(hours > 0 and minutes > 0):
+        return '{0} {1} e {2} {3}'.format(hours,hoursfmt, minutes, minutesfmt)
+    elif(hours > 0 and minutes == 0):
+        return '{0} {1}'.format(hours, hoursfmt)
+    else:
+        return '{0} {1}'.format(minutes, minutesfmt)
 
 def labelFormatText(label, time):
     return "```fix\n# {0} {1}```".format(label,time)
