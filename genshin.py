@@ -48,7 +48,10 @@ def timeFormatText(formatted_time_delta,is_weekly=False,days=0):
         if(days==0):
             return "\u2022 {0} at\u00e9 o reset semanal".format(formatted_time_delta)
         else:
-            return "\u2022 {0} dias, {1} at\u00e9 o reset semanal".format(days, formatted_time_delta)
+            if(not formatted_time_delta.contains("hora")):
+                return "\u2022 {0} dias e {1} at\u00e9 o reset semanal".format(days, formatted_time_delta)
+            else:
+                return  "\u2022 {0} dias, {1} at\u00e9 o reset semanal".format(days, formatted_time_delta)
     else:
         return "\u2022 {0} at\u00e9 o reset diário".format(formatted_time_delta)
 
