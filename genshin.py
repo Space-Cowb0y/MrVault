@@ -30,15 +30,8 @@ def formatTimedelta(timedelta):
     hours, remainder = divmod(s, 3600)
     minutes, seconds = divmod(remainder, 60)
 
-    if(hours == 1):
-        hoursfmt = "hora"
-    else:
-        hoursfmt = "horas"
-
-    if(minutes == 1):
-        minutesfmt = "minuto"
-    else:
-        minutesfmt = "minutos"
+    hoursfmt = "hora" if hours <= 1 else "horas"
+    minutesfmt = "minuto" if minutes <= 1 else "minutos"
 
     if(hours > 0 and minutes > 0):
         return '{0} {1} e {2} {3}'.format(hours,hoursfmt, minutes, minutesfmt)
