@@ -21,12 +21,15 @@ def createDeck(numDecks):
 
 class BlackjackCog(commands.Cog):
     def __init__(self, bot):
+        self.gameStarted = False
         self.bot = bot
         self.deck = createDeck(4)
         self.player_hand = []
         self.dealer_hand = []
 
     def deal(self):
+        if not self.deck:
+            self.deck = createDeck(4)
         return self.deck.pop(0)
 
     def calcValue(self,hand):
@@ -40,10 +43,28 @@ class BlackjackCog(commands.Cog):
             value += 10
         return value
 
+    def toStrHand(self,hand):
+        hand_str = ''
+        for card in hand:
+            hand_str += '{0} '.format(card.suit + card.face)
+        return hand_str
+
+    def checkWin(self,stand=False):
+        dealer_value = self.calcValue(self.dealer_hand)
+        player_value = self.calcValue(self.player_hand)
+
+
+        if dealer_value == 21:
+            return 2
+        elif player_value == 21:
+            return 1
+        elif player_value > dealer_value and dealer_value > 17 and stand:
+            return 0
+
     @commands.command(aliases=['blackjack','bj'])
     async def startGame(self,ctx):
-        dealer_cards = []
-        player_cards = []
+        self.dealer_hand = []
+        self.player_hand = []
 
         dealer_cards.append(self.deal())
         player_cards.append(self.deal())
@@ -53,14 +74,11 @@ class BlackjackCog(commands.Cog):
         dealer_value = self.calcValue(dealer_cards)
         player_value = self.calcValue(player_cards)
 
-        dealer_hand_str = ''
-        for card in dealer_cards:
-            dealer_hand_str += '{0} '.format(card.suit + card.face)
+        message += 'Dealers\' Hand: {0}for a total of {1}'.format(toStrHand(dealer_cards),dealer_value)
+        message += '\nPlayer\'s Hand: {0}for a total of {1}'.format(toStrHand(player_cards), player_value)
 
-        player_cards_str = ''
-        for card in player_cards:
-            player_cards_str += '{0} '.format(card.suit + card.face)
-
-        message = 'Dealers\' Hand: {0}for a total of {1}'.format(dealer_hand_str,dealer_value)
-        message += '\nPlayer\'s Hand: {0}for a total of {1}'.format(player_cards_str, player_value)
         await ctx.send('{0} {1}'.format(message, '\nRemaining Cards: ' + str(len(self.deck))))
+
+    @commands.command
+    async def hit(self,ctx):
+

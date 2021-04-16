@@ -9,10 +9,11 @@ from enum import IntEnum
 # TODO(#3): Implement character and weapon stats.
 
 server_times = {
-                'NA':pytz.timezone('US/Central'),
-                'EU':pytz.timezone('CET'),
-                'ASIA':pytz.timezone('Asia/Shanghai'),
+                'NA': pytz.timezone('US/Central'),
+                'EU': pytz.timezone('CET'),
+                'ASIA': pytz.timezone('Asia/Shanghai'),
                }
+
 
 class Days(IntEnum):
     MONDAY = 0
@@ -23,7 +24,9 @@ class Days(IntEnum):
     SATURDAY = 5
     SUNDAY = 6
 
+
 fmt = '%-I:%M %p'
+
 
 def formatTimedelta(timedelta):
     s = timedelta.seconds
@@ -34,34 +37,38 @@ def formatTimedelta(timedelta):
     minutesfmt = "minuto" if minutes <= 1 else "minutos"
 
     if(hours > 0 and minutes > 0):
-        return '{0} {1} e {2} {3}'.format(hours,hoursfmt, minutes, minutesfmt)
+        return '{0} {1} e {2} {3}'.format(hours, hoursfmt, minutes, minutesfmt)
     elif(hours > 0 and minutes == 0):
         return '{0} {1}'.format(hours, hoursfmt)
     else:
         return '{0} {1}'.format(minutes, minutesfmt)
 
+
 def labelFormatText(label, time):
-    return "```fix\n# {0} {1}```".format(label,time)
+    return "```fix\n# {0} {1}```".format(label, time)
+
 
 def timeFormatText(formatted_time_delta, is_weekly=False, days=0):
     if(is_weekly):
-        if(days==0):
+        if(days == 0):
             return "\u2022 {0} at\u00e9 o reset semanal".format(formatted_time_delta)
         else:
-            if(not "hora" in formatted_time_delta):
+            if("hora" not in formatted_time_delta):
                 return "\u2022 {0} dias e {1} at\u00e9 o reset semanal".format(days, formatted_time_delta)
             else:
-                return  "\u2022 {0} dias, {1} at\u00e9 o reset semanal".format(days, formatted_time_delta)
+                return "\u2022 {0} dias, {1} at\u00e9 o reset semanal".format(days, formatted_time_delta)
     else:
         return "\u2022 {0} at\u00e9 o reset diário".format(formatted_time_delta)
 
-def calcDeltaDays(reset_weekday, time_now, timedelta_days,reset_hour = 4):
+
+def calcDeltaDays(reset_weekday, time_now, timedelta_days, reset_hour=4):
     delta_days = ((reset_weekday - time_now.weekday()) % 7) + timedelta_days
-    if(delta_days <= 0 and time_now.hour>reset_hour):
+    if(delta_days <= 0 and time_now.hour > reset_hour):
         delta_days = 6
     elif(delta_days <= 0):
         delta_days = 0
     return delta_days
+
 
 def createEmbed():
 
@@ -104,21 +111,25 @@ def createEmbed():
     embed.set_footer(text='%gt,%genshin,%time')
     return embed
 
-@commands.command(aliases=['gt','genshin','time'])
+
+@commands.command(aliases=['gt', 'genshin', 'time'])
 async def genshin_time(ctx):
     await ctx.send(embed=createEmbed())
 
+
 class EditCog(commands.Cog):
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
         self.channel_id = 781588371377356812
         self.message_id = 822931171566026792
         self.edit.start()
-    @tasks.loop(minutes=2,seconds=30)
+
+    @tasks.loop(minutes=2, seconds=30)
     async def edit(self):
         channel = self.bot.get_channel(self.channel_id)
         message = await channel.fetch_message(self.message_id)
         await message.edit(embed=createEmbed())
+
     @edit.before_loop
     async def before_edit(self):
         await self.bot.wait_until_ready()
