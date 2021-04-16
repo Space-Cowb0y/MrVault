@@ -51,14 +51,26 @@ def labelFormatText(label, time):
 def timeFormatText(formatted_time_delta, is_weekly=False, days=0):
     if(is_weekly):
         if(days == 0):
-            return "\u2022 {0} at\u00e9 o reset semanal".format(formatted_time_delta)
+            return(
+                "\u2022 {0} at\u00e9 o reset semanal"
+                .format(formatted_time_delta)
+            )
         else:
             if("hora" not in formatted_time_delta):
-                return "\u2022 {0} dias e {1} at\u00e9 o reset semanal".format(days, formatted_time_delta)
+                return(
+                    "\u2022 {0} dias e {1} at\u00e9 o reset semanal"
+                    .format(days, formatted_time_delta)
+                )
             else:
-                return "\u2022 {0} dias, {1} at\u00e9 o reset semanal".format(days, formatted_time_delta)
+                return(
+                    "\u2022 {0} dias, {1} at\u00e9 o reset semanal".
+                    format(days, formatted_time_delta)
+                )
     else:
-        return "\u2022 {0} at\u00e9 o reset diário".format(formatted_time_delta)
+        return(
+            "\u2022 {0} at\u00e9 o reset diário"
+            .format(formatted_time_delta)
+        )
 
 
 def calcDeltaDays(reset_weekday, time_now, timedelta_days, reset_hour=4):
@@ -77,27 +89,42 @@ def createEmbed():
 
     for server in server_times:
         time_now = datetime.datetime.now(tz=server_times[server])
-        reset_datetime = time_now.replace(hour=4, minute=0, second=0, microsecond=0)
+        reset_datetime = time_now.replace(hour=4,
+                                          minute=0,
+                                          second=0,
+                                          microsecond=0)
         deltatime_until_reset = reset_datetime - time_now
         delta_days = calcDeltaDays(Days.MONDAY,
                                    time_now,
                                    deltatime_until_reset.days)
 
         embed.description += labelFormatText(server, time_now.strftime(fmt))
-        embed.description += timeFormatText(formatTimedelta(deltatime_until_reset)) + "\n"
-        embed.description += timeFormatText(formatTimedelta(deltatime_until_reset),
-                                            is_weekly=True,
-                                            days=delta_days)
+        embed.description += timeFormatText(
+            formatTimedelta(deltatime_until_reset)
+        ) + "\n"
+        embed.description += timeFormatText(
+            formatTimedelta(deltatime_until_reset),
+            is_weekly=True,
+            days=delta_days
+        )
 
-    embed.description += labelFormatText("HoYoLab Daily Check-In", time_now.strftime(fmt))
-    checkin_reset_time = time_now.replace(hour=0, minute=0, second=0, microsecond=0)
+    embed.description += labelFormatText("HoYoLab Daily Check-In",
+                                         time_now.strftime(fmt))
+    checkin_reset_time = time_now.replace(hour=0,
+                                          minute=0,
+                                          second=0,
+                                          microsecond=0)
     checkin_time_left = checkin_reset_time - time_now
     embed.description += timeFormatText(formatTimedelta(checkin_time_left))
 
     time_now = datetime.datetime.now(tz=server_times["NA"])
-    embed.description += labelFormatText("NPCs Vendedores de Artefatos", time_now.strftime(fmt))
+    embed.description += labelFormatText("NPCs Vendedores de Artefatos",
+                                         time_now.strftime(fmt))
 
-    artifact_reset_time = time_now.replace(hour=4, minute=0, second=0, microsecond=0)
+    artifact_reset_time = time_now.replace(hour=4,
+                                           minute=0,
+                                           second=0,
+                                           microsecond=0)
     delta_time = artifact_reset_time - time_now
     delta_days = calcDeltaDays(Days.THURSDAY,
                                time_now,
@@ -107,7 +134,9 @@ def createEmbed():
                                         days=delta_days)
 
     embed.set_image(url='https://i.imgur.com/CYvBWxw.png')
-    embed.timestamp = datetime.datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
+    embed.timestamp = datetime.datetime.now(
+        tz=pytz.timezone('America/Sao_Paulo')
+    )
     embed.set_footer(text='%gt,%genshin,%time')
     return embed
 
