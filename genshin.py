@@ -63,7 +63,6 @@ def calcDeltaDays(reset_weekday, time_now, timedelta_days,reset_hour = 4):
         delta_days = 0
     return delta_days
 
-
 def createEmbed():
 
     embed = discord.Embed(title='Timers')
@@ -100,7 +99,7 @@ def createEmbed():
                                         is_weekly=True,
                                         days=delta_days)
 
-    embed.set_image(url='https://i.imgur.com/40UEepe.png')
+    embed.set_image(url='https://i.imgur.com/CYvBWxw.png')
     embed.timestamp = datetime.datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
     embed.set_footer(text='%gt,%genshin,%time')
     return embed
